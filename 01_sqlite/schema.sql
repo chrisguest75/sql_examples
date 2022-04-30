@@ -1,0 +1,18 @@
+CREATE TABLE "images" 
+( 
+    [ImageId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    [Name] NVARCHAR(128) NOT NULL,
+    [Type] NVARCHAR(32) NOT NULL
+);
+
+CREATE TABLE "scan" 
+( 
+    
+};
+
+CREATE TABLE "components" 
+( 
+    [ComponentId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    [Name] NVARCHAR(128) NOT NULL,
+    [Version] NVARCHAR(128) NOT NULL
+);
