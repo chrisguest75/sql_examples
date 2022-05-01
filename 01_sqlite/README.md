@@ -32,7 +32,19 @@ sqlite3 ./test.db
 .dbinfo
 ```
 
+```sh
+./generate.sh
+
+sqlite3 ./test.db
+
+.import ./sbom/ubuntu20.04.csv images
+
+select * from images;
+```
+
 ## Resources
 
 * https://sqlite.org/index.html
 * SQLite Tutorial https://www.sqlitetutorial.net/
+
+https://www.sqlitetutorial.net/sqlite-import-csv/
