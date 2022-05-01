@@ -87,3 +87,7 @@ https://zetcode.com/db/sqlite/tool/
 
 https://www.sqlite.org/foreignkeys.html
 
+
+
+https://stackoverflow.com/questions/9692319/how-can-i-insert-values-into-a-table-using-a-subquery-with-more-than-one-result
+
