@@ -10,13 +10,17 @@ TODO:
 
 
 
-## Example
+## Prerequisites
 
 ```sh
 brew info sqlite
 
 brew install sqlite
+
+sqlite3 --version 
 ```
+
+## Cli Tool
 
 ```sh
 sqlite3
@@ -24,21 +28,21 @@ sqlite3
 .help
 ```
 
+## SBOM example
+
 ```sh
-sqlite3 ./test.db
-.read ./schema.sql
+sqlite3 ./sbom.db
+.dbinfo
+.read ./sbom_schema.sql
 .tables
 .schema
-
-.dbinfo
 ```
 
-## Load data (csv)
+### Load data (csv)
 
 ```sh
-./generate.sh
-
-sqlite3 ./test.db
+# generate data
+./sbom_generate.sh
 ```
 
 ```sh
@@ -47,7 +51,6 @@ sqlite3 ./test.db
 .separator "," "\n"
 .import ./sbom/ubuntu20.04.csv images
 .import ./sbom/ubuntu20.04_components.csv components
-.import ./sbom/ubuntu22.04.csv images
 
 select * from images;
 
@@ -62,7 +65,7 @@ INSERT INTO images SELECT json_extract(value, '$.name'), json_extract(value, '$.
 
 ```
 
-
+### Exit
 
 ```sh
 # exit sqlite
@@ -73,10 +76,10 @@ INSERT INTO images SELECT json_extract(value, '$.name'), json_extract(value, '$.
 
 * https://sqlite.org/index.html
 * SQLite Tutorial https://www.sqlitetutorial.net/
+* Common Format and MIME Type for Comma-Separated Values (CSV) Files [here](https://datatracker.ietf.org/doc/html/rfc4180
+https://www.sqlitetutorial.net/sqlite-import-csv/)
 
-https://www.sqlitetutorial.net/sqlite-import-csv/
 
-Common Format and MIME Type for Comma-Separated Values (CSV) Files https://datatracker.ietf.org/doc/html/rfc4180
 
 https://stackoverflow.com/questions/46407770/how-to-convert-a-json-file-to-an-sqlite-database
 
