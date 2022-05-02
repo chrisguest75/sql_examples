@@ -1,6 +1,6 @@
 # README
 
-Demonstrate a basic `sqlite` example
+Demonstrate building an SBOM db in sqlite  
 
 TODO:
 
