@@ -65,5 +65,5 @@ drop table sboms;
 * JSON Functions And Operators [here](https://www.sqlite.org/json1.html)
 * Compiling SQLite for use with Python Applications [here](https://charlesleifer.com/blog/compiling-sqlite-for-use-with-python-applications/)
 * How do I iterate over an array in a nested json object in sqlite? [here](https://stackoverflow.com/questions/67814988/how-do-i-iterate-over-an-array-in-a-nested-json-object-in-sqlite)
-
-
+* Common Format and MIME Type for Comma-Separated Values (CSV) Files [here](https://datatracker.ietf.org/doc/html/rfc4180
+https://www.sqlitetutorial.net/sqlite-import-csv/)
