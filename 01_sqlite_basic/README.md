@@ -2,6 +2,10 @@
 
 Demonstrate a basic `sqlite` example
 
+TODO:
+
+* pragma https://www.sqlite.org/pragma.html
+* 
 ## Prerequisites
 
 ```sh
@@ -54,7 +58,6 @@ sqlite3 ./sbom.db
 
 
 
-https://stackoverflow.com/questions/46407770/how-to-convert-a-json-file-to-an-sqlite-database
 
 https://zetcode.com/db/sqlite/tool/
 

@@ -27,3 +27,5 @@ Steps [README.md](./02_sqlite_sbom/README.md)
 
 ## Resources
 
+* https://sqlite.org/index.html
+* SQLite Tutorial https://www.sqlitetutorial.net/
