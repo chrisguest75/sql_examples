@@ -8,8 +8,6 @@ TODO:
 * Import the data from the SBOM into SQLlite
 * Create queries that allow me to search for particular components. 
 
-
-
 ## Prerequisites
 
 ```sh
@@ -17,7 +15,11 @@ brew info sqlite
 
 brew install sqlite
 
-sqlite3 --version 
+sqlite3 --version
+
+# install path and show brew sqlite compile options
+brew --cellar sqlite  
+cat $(brew --cellar sqlite)/3.38.3/.brew/sqlite.rb
 ```
 
 ## Cli Tool
@@ -41,28 +43,11 @@ sqlite3 ./sbom.db
 ### Load data (csv)
 
 ```sh
-# generate data
+# generate sbom data
 ./sbom_generate.sh
-```
 
-```sh
-# trying to load csv
-.mode ascii
-.separator "," "\n"
-.import ./sbom/ubuntu20.04.csv images
-.import ./sbom/ubuntu20.04_components.csv components
-
-select * from images;
-
-drop table images;
-```
-
-## Load data (json)
-
-```sh
-
-INSERT INTO images SELECT json_extract(value, '$.name'), json_extract(value, '$.type') FROM json_each(readfile('./sbom/ubuntu20.04_images.json'));
-
+# load data into db
+./sbom_load.sh
 ```
 
 ### Exit
@@ -90,4 +75,9 @@ https://www.sqlite.org/foreignkeys.html
 
 
 https://stackoverflow.com/questions/9692319/how-can-i-insert-values-into-a-table-using-a-subquery-with-more-than-one-result
+
+https://www.apimirror.com/sqlite/JSON
+
+
+
 

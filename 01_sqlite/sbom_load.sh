@@ -7,16 +7,15 @@ echo "** Create DB **"
 sqlite3 ${DBFILE} ".read ./sbom_schema.sql"
 
 echo "** Load DB **"
+echo "** ubuntu20.04 **"
 sqlite3 ${DBFILE} "INSERT INTO images SELECT rowid, json_extract(value, '$.name'), json_extract(value, '$.type') FROM json_each(readfile('./sbom/ubuntu20.04_images.json'))" 
 sqlite3 ${DBFILE} "INSERT INTO components SELECT rowid, json_extract(value, '$.type'), json_extract(value, '$.name'), json_extract(value, '$.version') FROM json_each(readfile('./sbom/ubuntu20.04_components.json'))" 
-
+echo "** ubuntu22.04 **"
 sqlite3 ${DBFILE} "INSERT INTO images SELECT rowid, json_extract(value, '$.name'), json_extract(value, '$.type') FROM json_each(readfile('./sbom/ubuntu22.04_images.json'))" 
 sqlite3 ${DBFILE} "INSERT INTO components SELECT rowid, json_extract(value, '$.type'), json_extract(value, '$.name'), json_extract(value, '$.version') FROM json_each(readfile('./sbom/ubuntu22.04_components.json'))" 
 
-
+echo "** Test **"
 sqlite3 ${DBFILE} 'INSERT INTO images (ImageId, Name, Type) VALUES (?, "test", "test");'
-
-
 
 
 echo "** Show DB **"
