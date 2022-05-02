@@ -59,8 +59,7 @@ sqlite3 ./sbom.db
 
 ## Resources
 
-* https://sqlite.org/index.html
-* SQLite Tutorial https://www.sqlitetutorial.net/
+
 * Common Format and MIME Type for Comma-Separated Values (CSV) Files [here](https://datatracker.ietf.org/doc/html/rfc4180
 https://www.sqlitetutorial.net/sqlite-import-csv/)
 
@@ -81,3 +80,4 @@ https://www.apimirror.com/sqlite/JSON
 
 
 
+https://www.sqlite.org/lang_insert.html

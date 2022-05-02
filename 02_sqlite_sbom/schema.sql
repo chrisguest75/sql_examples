@@ -1,3 +1,8 @@
+CREATE TABLE "sboms" (
+    filename NVARCHAR(128) NOT NULL, 
+    filetext JSON
+);
+
 CREATE TABLE "images" 
 ( 
     [ImageId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
