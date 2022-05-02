@@ -7,8 +7,24 @@
 _basepath=./data
 mkdir -p ${_basepath}
 
-for image in "ubuntu:20.04" "ubuntu:22.04"; 
+function trim() {
+    : ${1?"${FUNCNAME[0]}(string) - missing string argument"}
+
+    if [[ -z ${1} ]]; then 
+        echo ""
+        return
+    fi
+    # remove an 
+    trimmed=${1##*( )}
+    echo ${trimmed%%*( )}
+}
+
+readarray images < <(jq -r '.images[]' ./images.json)
+echo "${images[1]}"
+
+for image in "${images[@]}"; 
 do
+    image=$(trim $image)
     echo "SBOM for $image"
     _outfile="${image//:/}"
     docker sbom --format cyclonedx-json $image > ${_basepath}/$_outfile.json
