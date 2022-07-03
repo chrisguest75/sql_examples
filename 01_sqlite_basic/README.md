@@ -5,7 +5,7 @@ Demonstrate a basic `sqlite` example
 TODO:
 
 * pragma https://www.sqlite.org/pragma.html
-* 
+
 ## Prerequisites
 
 ```sh
@@ -28,10 +28,10 @@ sqlite3
 .help
 ```
 
-## SBOM example
+## Person example
 
 ```sh
-sqlite3 ./sbom.db
+sqlite3 ./person.db
 .dbinfo
 .read ./schema.sql
 .tables
@@ -53,22 +53,7 @@ sqlite3 ./sbom.db
 
 ## Resources
 
-* https://sqlite.org/index.html
-* SQLite Tutorial https://www.sqlitetutorial.net/
-
-
-
-
-https://zetcode.com/db/sqlite/tool/
-
-https://www.sqlite.org/foreignkeys.html
-
-
-
-https://stackoverflow.com/questions/9692319/how-can-i-insert-values-into-a-table-using-a-subquery-with-more-than-one-result
-
-https://www.apimirror.com/sqlite/JSON
-
-
-
-
+* The sqlite3 command line tool [here](https://zetcode.com/db/sqlite/tool/)
+* SQLite Foreign Key Support [here](https://www.sqlite.org/foreignkeys.html)
+* How can I insert values into a table, using a subquery with more than one result? [here](https://stackoverflow.com/questions/9692319/how-can-i-insert-values-into-a-table-using-a-subquery-with-more-than-one-result)
+* JSON Functions And Operators [here](https://www.sqlite.org/json1.html)

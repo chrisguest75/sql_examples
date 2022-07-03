@@ -8,12 +8,14 @@ Cheatsheet for Sqlite
 # trying to load csv
 mkdir -p ./data
 
+# create some example data
 cat << EOF > ./data/ubuntu20.04.csv
 "Name","Type"
 "ubuntu:20.04","container"
 "ubuntu:22.04","container"
 EOF
 
+# load the data into the db
 sqlite3 ./data/csv.db
 .mode ascii
 .separator "," "\n"
@@ -29,6 +31,7 @@ drop table images;
 # trying to load json
 mkdir -p ./data
 
+# create some example data
 cat << EOF > ./data/ubuntuimages.json
 [
   {
@@ -58,7 +61,6 @@ select json_extract(value, '$.name') as name, json_extract(value, '$.type') as t
 drop table sboms;
 .quit
 ```
-
 
 ## Resources
 

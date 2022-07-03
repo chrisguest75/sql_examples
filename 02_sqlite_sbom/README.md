@@ -59,25 +59,6 @@ sqlite3 ./sbom.db
 
 ## Resources
 
-
 * Common Format and MIME Type for Comma-Separated Values (CSV) Files [here](https://datatracker.ietf.org/doc/html/rfc4180
 https://www.sqlitetutorial.net/sqlite-import-csv/)
-
-
-
-https://stackoverflow.com/questions/46407770/how-to-convert-a-json-file-to-an-sqlite-database
-
-https://zetcode.com/db/sqlite/tool/
-
-https://www.sqlite.org/foreignkeys.html
-
-
-
-https://stackoverflow.com/questions/9692319/how-can-i-insert-values-into-a-table-using-a-subquery-with-more-than-one-result
-
-https://www.apimirror.com/sqlite/JSON
-
-
-
-
-https://www.sqlite.org/lang_insert.html
+* SQL INSERT [here](https://www.sqlite.org/lang_insert.html)
