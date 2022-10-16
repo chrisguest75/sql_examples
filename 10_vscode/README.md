@@ -2,6 +2,8 @@
 
 Demonstrate how to pull `vscode` sqlite DB to query and modify it.  
 
+`vscode` has he ability to disable extensions by workspace.  For my work repos I'd like to be able to disable `GitHub.copilot` across all those workspace automatically.  
+
 TODO:  
 
 * disable extensions per workspace only
@@ -17,9 +19,32 @@ ls ~/.vscode/extensions
 # GitHub.copilot
 ```
 
+## Disable extension
+
+```bash
+# react_examples (end with '$' means we only want parent directory)
+export PROJECT=react_examples$
+# get workspace directory
+export DBPATH=$(dirname "$(find $HOME/Library/Application\ Support/Code/User/workspaceStorage -iname "workspace.json" -exec jq --arg filename {} -c '. | {"folder": .folder, "filename": $filename}' {} \; | jq -s '.' | jq --arg project "${PROJECT}" '.[] | select(.folder != null) | select(.folder | test(".*\( $project )"))' | jq -s -r '.[].filename' | tail -n 1)")
+
+export DBFILE="${DBPATH}/state.vscdb"
+echo "${DBPATH}"
+echo "${DBFILE}"
+# create the extensionsIdentifiers/disabled value that will disable copilot.  
+# we filter out existing disabled copilot and re-add it to list.  Mix of sql and jq to add to modify json document.  
+sqlite3 "${DBFILE}" 'SELECT IFNULL(b.value, "[]") FROM (SELECT "extensionsIdentifiers/disabled" as keyname) as A LEFT OUTER JOIN ItemTable as B ON a.keyname=b.key;' | jq --arg id "github.copilot" --arg guid "23c4aeee-f844-43cd-b53e-1113e483f1a6" '[.[] | del(select(.id==$id)) | select(. != null)] | . += [{"id": $id, "uuid": $guid}]' > ./disabled.json
+cat ./disabled.json
+# replace existing disabled extenstions json doc
+sqlite3 "${DBFILE}" 'REPLACE INTO ItemTable (key, value)
+VALUES("extensionsIdentifiers/disabled", readfile("./disabled.json"));'
+# show new list of disabled extensions
+sqlite3 "${DBFILE}" 'SELECT value FROM ItemTable WHERE "key" = "extensionsIdentifiers/disabled";' | jq .
+```
+
+
 ## Config
 
-User Configuration  
+User Configuration for GitHub.copilot  
 
 ```bash
 cat $HOME/Library/Application\ Support/Code/User/settings.json
@@ -40,20 +65,34 @@ cat $HOME/Library/Application\ Support/Code/User/settings.json
 cat $HOME/Library/Application\ Support/Code/User/globalStorage/storage.json | jq .
 ```
 
-NOTE: Sometimes we have two directories for the same workspace. 
+## Find workspaces
+
+NOTE: Sometimes we have two directories for the same workspace.  
 
 ```bash
 # find the workspace configs for a project
+# find all
+export PROJECT=
+# find root folder for clone
+export PROJECT=react_examples$
+# find parent folder for a set of clones
+export PROJECT=/scratch/
 # add -print if you want to debug
-find $HOME/Library/Application\ Support/Code/User/workspaceStorage -iname "workspace.json" -exec jq --arg filename {} -c '. | {"folder": .folder, "filename": $filename}' {} \; | jq -s '.' | jq '.[] | select(.folder != null) | select(.folder | test(".*react_examples$"))' | jq -s .
+find $HOME/Library/Application\ Support/Code/User/workspaceStorage -iname "workspace.json" -exec jq --arg filename {} -c '. | {"folder": .folder, "filename": $filename}' {} \; | jq -s '.' | jq --arg project "${PROJECT}" '.[] | select(.folder != null) | select(.folder | test(".*\( $project )"))' | jq -s .
 ```
 
+## Backup state
+
+Backup the vsode state files.  We have a global one and one for each workspace.  
+
 ```bash
+# backup global
 mkdir -p ./out/global
 cp "$HOME/Library/Application Support/Code/User/globalStorage/state.vscdb" ./out/global
 
+# copy a workspaces db
 mkdir -p ./out/react_examples
-cp -r "/Users/chris.guest/Library/Application Support/Code/User/workspaceStorage/b1fb23da175992912e0827db535659f7/" ./out/react_examples
+cp -r "/Users/${USER}/Library/Application Support/Code/User/workspaceStorage/b1fb23da175992912e0827db535659f7/" ./out/react_examples
 ```
 
 ## Query DB
@@ -77,7 +116,6 @@ sqlite3 ${DBFILE} 'SELECT "key", value FROM ItemTable WHERE "value" LIKE "%copil
 sqlite3 ${DBFILE} 'SELECT "key", value FROM ItemTable WHERE "key" = "extensionsIdentifiers/disabled";' 
 
 sqlite3 ${DBFILE} 'SELECT value FROM ItemTable WHERE "key" = "extensionsIdentifiers/disabled";' | jq .
-
 ```
 
 ## List workspaces and disabled extensions
@@ -127,22 +165,6 @@ echo '{"ff":"ff"}' | sed 's/^$/\[\]/' | jq 'if . == null then ["d"] else . end |
 sqlite3 ${DBFILE} 'SELECT IFNULL(b.value, "[]") FROM (SELECT "extensionsIdentifiers/disabled" as keyname) as A LEFT OUTER JOIN ItemTable as B ON a.keyname=b.key;' 
 sqlite3 ${DBFILE} 'SELECT IFNULL(b.value, "[]") FROM (SELECT "extensionsIdentifiers/disabled2" as keyname) as A LEFT OUTER JOIN ItemTable as B ON a.keyname=b.key;' 
 sqlite3 ${DBFILE} 'SELECT IFNULL(b.value, "[]") FROM (SELECT "extensionsIdentifiers/disabled3" as keyname) as A LEFT OUTER JOIN ItemTable as B ON a.keyname=b.key;' 
-```
-
-## WORKING - THIS UPDATES AND ADDS THE EXCLUSION
-
-```bash
-# react_examples
-MYPROJECT=react_examples
-export DBPATH=$(dirname "$(find $HOME/Library/Application\ Support/Code/User/workspaceStorage -iname "workspace.json" -exec jq --arg filename {} -c '. | {"folder": .folder, "filename": $filename}' {} \; | jq -s '.' | jq '.[] | select(.folder != null) | select(.folder | test(".*react_examples$"))' | jq -s -r '.[].filename' | tail -n 1)")
-export DBFILE="${DBPATH}/state.vscdb"
-echo "${DBPATH}"
-echo "${DBFILE}"
-sqlite3 "${DBFILE}" 'SELECT IFNULL(b.value, "[]") FROM (SELECT "extensionsIdentifiers/disabled" as keyname) as A LEFT OUTER JOIN ItemTable as B ON a.keyname=b.key;' | jq --arg id "github.copilot" --arg guid "23c4aeee-f844-43cd-b53e-1113e483f1a6" '[.[] | del(select(.id==$id)) | select(. != null)] | . += [{"id": $id, "uuid": $guid}]' > ./disabled.json
-
-sqlite3 "${DBFILE}" 'REPLACE INTO ItemTable (key, value)
-VALUES("extensionsIdentifiers/disabled", readfile("./disabled.json"));'
-sqlite3 "${DBFILE}" 'SELECT value FROM ItemTable WHERE "key" = "extensionsIdentifiers/disabled";' | jq .
 ```
 
 ## Resources
