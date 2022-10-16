@@ -2,6 +2,14 @@
 
 Cheatsheet for Sqlite
 
+## Schema
+
+```sh
+# show tables for a sqlite db
+sqlite3 "${DBFILE}" 'SELECT name FROM sqlite_schema WHERE type ="table" AND name NOT LIKE "sqlite_%";'
+```
+
+
 ## CSV Example
 
 ```sh

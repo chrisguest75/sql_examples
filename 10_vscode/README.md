@@ -4,6 +4,11 @@ Demonstrate how to pull `vscode` sqlite DB to query and modify it.
 
 `vscode` has he ability to disable extensions by workspace.  For my work repos I'd like to be able to disable `GitHub.copilot` across all those workspace automatically.  
 
+NOTES:
+
+* Although sqlite supports JSON type it doesn't seem to offer functions to work with it easily.  
+* SQLite does not support DECLARE to create variables.  
+
 TODO:  
 
 * disable extensions per workspace only
