@@ -27,6 +27,13 @@ npm run start:dev -- --seed --count 10
 npm run start:dev -- --clean 
 ```
 
+## Making changes
+
+```sh
+# add a new field and create a new migration
+npx prisma migrate dev --name add_liked  
+```
+
 ## Created
 
 ```sh

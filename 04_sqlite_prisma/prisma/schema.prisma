@@ -59,6 +59,8 @@ model Tweet {
   // It will link the `id` of the `User` model
   userId Int
 
+  liked Boolean @default(false)
+
   // We set a `user` variable
   // With a `User` type (many-to-one relationship)
   // Because each tweet has an author
