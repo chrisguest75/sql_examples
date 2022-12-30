@@ -4,6 +4,16 @@ Demonstrate using prisma with sqlite.
 
 ## Reason
 
+Prisma is a 
+
+TODO:
+
+* Add some queries.  
+  * Add turn verbose on or not.  
+  * Number of tweets per user
+  * Total tweets
+  * React page to render queries
+  * Block level attributes
 
 ## Prerequisites
 
@@ -53,7 +63,10 @@ npx prisma init --datasource-provider sqlite
 * falso [here](https://netbasal.com/generate-fake-data-in-the-browser-and-node-js-using-falso-3998d2bcbaaf)
 * falso getting started [here](https://ngneat.github.io/falso/docs/getting-started/)
 * falso examples [here](https://ngneat.github.io/falso/docs/general/#randboolean)
-
+* Learn Prisma In 60 Minutes [here](https://www.youtube.com/watch?v=RebA5J-rlwg)
 
 https://www.danilucaci.com/blog/reset-and-seed-prisma-database
 https://flaviocopes.com/prisma-clear-database/
+
+https://www.prisma.io/docs/concepts/components/prisma-schema/generators
+
