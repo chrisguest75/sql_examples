@@ -28,12 +28,20 @@ code --install-extension alexcvzz.vscode-sqlite
 nvm use
 npm install
 
+# run tests
+npm run test
+
+#
 npm run start:dev
 
 # seeddb with 10  
-npm run start:dev -- --seed --count 10 
+npm run start:dev -- --seed --count 1
+# seed with a file
+npm run start:dev -- --seed --file "./pokedex.json"     
 
 # clean db
+npx prisma migrate reset  
+# or
 npm run start:dev -- --clean 
 ```
 

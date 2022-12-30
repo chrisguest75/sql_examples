@@ -13,7 +13,27 @@ datasource db {
 model Pokemon {
   id Int @id @unique
 
+  version Int @default(0)
+
+  num String
+
   name String @unique
+
+  heightCm Int
+
+  weightGrams Int
+
+  candy String 
+
+  candy_count Int @default(0)
+
+  eggMetres Int
+
+  spawn_chance Float
+
+  avg_spawns Float
+
+  spawn_time String
 }
 
 // After the database connection

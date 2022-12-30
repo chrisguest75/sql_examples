@@ -2,3 +2,4 @@ node_modules
 build
 docs
 dev.db
+dev.db-journal

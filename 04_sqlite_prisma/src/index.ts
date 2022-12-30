@@ -4,6 +4,8 @@ import * as fs from 'fs'
 import minimist from 'minimist'
 import { PrismaClient } from '@prisma/client'
 import { randNumber, randTextRange, randEmail, randUser } from '@ngneat/falso'
+import { Pokemon } from '../types/pokemon'
+import { Conversion } from '../src/conversion'
 
 const prisma = new PrismaClient({ log: ['query'] })
 
@@ -11,6 +13,9 @@ const prisma = new PrismaClient({ log: ['query'] })
 Clean the database
  */
 async function clean(args: minimist.ParsedArgs) {
+  logger.info(`Cleaning pokemon`)
+  await prisma.pokemon.deleteMany({})
+
   // NOTE: it will fail deleting the user if there are tweets
   logger.info(`Cleaning tweets`)
   await prisma.tweet.deleteMany({})
@@ -36,14 +41,35 @@ async function seed(args: minimist.ParsedArgs) {
     try {
       const pokedex = JSON.parse(fs.readFileSync(file, 'utf8'))
 
-      const pokemon = await prisma.pokemon.create({
-        data: {
-          id: pokedex.pokemon[0].id,
-          name: pokedex.pokemon[0].name,
-        },
-      })
+      // create pokemon 
+      await Promise.all(
+        pokedex.pokemon.map(async (pokemon: Pokemon) => {
+          const heightCm = Conversion.metresToCm(pokemon.height)
+          const weightGrams = Conversion.kilosToGrams(pokemon.weight)
+          let eggMetres = -1
+          if (pokemon.egg !== 'Not in Eggs') {
+            eggMetres = Conversion.distanceToMetres(pokemon.egg)
+          }
 
-      logger.info(`Pokemon`, pokemon)
+          const record = await prisma.pokemon.create({
+            data: {
+              id: pokemon.id,
+              version: pokemon.version,
+              num: pokemon.num,
+              name: pokemon.name,
+              heightCm: heightCm,
+              weightGrams: weightGrams,
+              candy: pokemon.candy,
+              candy_count: pokemon.candy_count,
+              eggMetres: eggMetres,
+              spawn_chance: pokemon.spawn_chance,
+              avg_spawns: pokemon.avg_spawns,
+              spawn_time: pokemon.spawn_time,
+            },
+          })
+          logger.info(`Pokemon`, JSON.stringify(record))
+        }),
+      )
     } catch (e) {
       logger.error(e)
       return new Promise((resolve, reject) => {
@@ -51,6 +77,7 @@ async function seed(args: minimist.ParsedArgs) {
       })
     }
   } else {
+    // create random users
     const count = Number.parseInt(args['count'])
     if (count <= 0) {
       logger.warn('File count is not set')
@@ -119,17 +146,25 @@ export async function main(args: minimist.ParsedArgs) {
   logger.warn('WARN - level message')
   logger.error('ERROR - level message')
   logger.fatal('FATAL - level message')*/
+  let processed = false
 
   if (args['clean']) {
     await clean(args)
+    processed = true
   }
 
   if (args['seed']) {
     await seed(args)
+    processed = true
   }
 
   if (args['query']) {
     await query(args)
+    processed = true
+  }
+
+  if (!processed) {
+    logger.warn('No command specified')
   }
 
   return new Promise((resolve, reject) => {
