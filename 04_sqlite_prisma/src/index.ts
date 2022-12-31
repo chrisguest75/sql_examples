@@ -3,31 +3,151 @@ import * as dotenv from 'dotenv'
 import * as fs from 'fs'
 import minimist from 'minimist'
 import { PrismaClient } from '@prisma/client'
-import { randNumber, randTextRange, randEmail, randUser } from '@ngneat/falso'
 import { Pokemon } from '../types/pokemon'
 import { Conversion } from '../src/conversion'
+import * as util from 'util'
 
 const prisma = new PrismaClient({ log: ['query'] })
 
-const PokemonTypes = [
-  'Bug',
-  'Dark',
-  'Dragon',
-  'Electric',
-  'Fairy',
-  'Fighting',
-  'Fire',
-  'Flying',
-  'Ghost',
-  'Grass',
-  'Ground',
-  'Ice',
-  'Poison',
-  'Psychic',
-  'Rock',
-  'Steel',
-  'Water',
-]
+// TODO: add more queries
+// all with specified weakensss
+const queries = {
+  countPokemon: async (args: minimist.ParsedArgs) => {
+    const pokemonCount = await prisma.pokemon.count()
+    logger.info(`Pokemon Count:${pokemonCount}`)
+    return pokemonCount
+  },
+  heaviestWeight: async (args: minimist.ParsedArgs) => {
+    const heaviest = await prisma.pokemon.aggregate({
+      _max: {
+        weightGrams: true,
+      },
+    })
+    logger.info(JSON.stringify(heaviest))
+    return heaviest
+  },
+  heaviestPokemon: async (args: minimist.ParsedArgs) => {
+    const heaviest = await prisma.pokemon.findMany({
+      orderBy: {
+        weightGrams: 'desc',
+      },
+      take: 1,
+    })
+
+    logger.info(JSON.stringify(heaviest))
+    return heaviest
+  },
+  tallestPokemon: async (args: minimist.ParsedArgs) => {
+    const tallest = await prisma.pokemon.findMany({
+      orderBy: {
+        heightCm: 'desc',
+      },
+      take: 1,
+    })
+
+    logger.info(JSON.stringify(tallest))
+    return tallest
+  },
+  findPokemon: async (args: minimist.ParsedArgs) => {
+    const name = args['name']
+    if (name != '') {
+      const match = await prisma.pokemon.findUnique({
+        where: {
+          name: name,
+        },
+      })
+      logger.info(JSON.stringify(match))
+      return match
+    } else {
+      const match = { reason: 'Please specify a name' }
+      logger.info(JSON.stringify(match))
+      return match
+    }
+  },
+  findPokemonMatch: async (args: minimist.ParsedArgs) => {
+    const name = args['name']
+    if (name != '') {
+      const match = await prisma.pokemon.findMany({
+        where: {
+          name: {
+            contains: name,
+          },
+        },
+      })
+      logger.info(JSON.stringify(match))
+      return match
+    } else {
+      const match = { reason: 'Please specify a name' }
+      logger.info(JSON.stringify(match))
+      return match
+    }
+  },
+  findPokemonInclude: async (args: minimist.ParsedArgs) => {
+    const name = args['name']
+    if (name != '') {
+      const match = await prisma.pokemon.findMany({
+        where: {
+          name: name,
+        },
+        include: {
+          type: {
+            select: {
+              name: true,
+            },
+          },
+          weakness: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      })
+      logger.info(JSON.stringify(match))
+      return match
+    } else {
+      const match = { reason: 'Please specify a name' }
+      logger.info(JSON.stringify(match))
+      return match
+    }
+  },
+  listWeaknesses: async (args: minimist.ParsedArgs) => {
+    const weakensses = await prisma.pokemonWeakness.findMany({
+      where: {},
+      distinct: ['name'],
+      select: { name: true },
+    })
+    logger.info(JSON.stringify(weakensses))
+    return weakensses
+  },
+  findPokemonWithWeakness: async (args: minimist.ParsedArgs) => {
+    const weakness = args['weakness']
+    if (weakness != '') {
+      const match = await prisma.pokemon.findMany({
+        include: {
+          type: {
+            select: {
+              name: true,
+            },
+          },
+          weakness: {
+            select: {
+              name: true,
+            },
+            where: {
+              name: weakness,
+            },
+          },
+        },
+      })
+      logger.info(JSON.stringify(match))
+      return match
+    } else {
+      const match = { reason: 'Please specify a weakness' }
+      logger.info(JSON.stringify(match))
+      return match
+    }
+  },
+}
 
 /*
 Clean the database
@@ -125,6 +245,18 @@ async function seed(args: minimist.ParsedArgs) {
 
 async function query(args: minimist.ParsedArgs) {
   logger.info(`Querying DB`)
+  const queryName = args['query']
+  if (queryName == '') {
+    logger.warn('No query name specified')
+    return new Promise((resolve, reject) => {
+      reject('No query name specified')
+    })
+  }
+
+  // access the query by name
+  type ObjectKey = keyof typeof queries
+  const result = await queries[queryName as ObjectKey](args)
+  //console.log(util.inspect(result, { showHidden: false, depth: null, colors: true }))
 
   return new Promise((resolve, reject) => {
     resolve('Complete')
@@ -151,6 +283,13 @@ export async function main(args: minimist.ParsedArgs) {
 
   if (args['seed']) {
     await seed(args)
+    processed = true
+  }
+
+  if (args['listQueries']) {
+    const supported = Object.keys(queries)
+    logger.info(`Supported queries: ${supported}`)
+    console.log(supported)
     processed = true
   }
 
@@ -196,9 +335,9 @@ Entrypoint
 dotenv.config()
 logger.info(`Pino:${logger.version}`)
 const args: minimist.ParsedArgs = minimist(process.argv.slice(2), {
-  string: ['count', 'file'],
-  boolean: ['verbose', 'seed', 'clean', 'query'],
-  default: { count: '1', seed: false, clean: false, query: false },
+  string: ['count', 'file', 'query', 'name', 'weakness'],
+  boolean: ['verbose', 'seed', 'clean', 'listQueries'],
+  default: { count: '1', seed: false, clean: false, listQueries: false, query: '', name: '', weakness: '' },
 })
 //const m = promisify(main)
 main(args)

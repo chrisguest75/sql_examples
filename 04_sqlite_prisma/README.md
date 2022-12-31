@@ -8,12 +8,11 @@ Prisma is an ORM for typescript that handles multiple SQL backends.
 
 TODO:
 
-* Add some queries.  
-  * Add turn verbose on or not for logging.  
-  * Spawn time as seconds.
-  * Get the relationships to work.  
-  * React page to render queries
-  * Block level attributes
+* Make docker work
+* Add turn verbose on or not for logging.  
+* Spawn time as seconds.
+* React page to render queries
+* Block level attributes
 
 ## Prerequisites
 
@@ -34,15 +33,36 @@ npm run test
 #
 npm run start:dev
 
-# seeddb with 10  
-npm run start:dev -- --seed --count 1
 # seed with a file
-npm run start:dev -- --seed --file "./pokedex.json"     
+npm run start:once -- --seed --file "./pokedex.json"     
 
 # clean db
 npx prisma migrate reset  
 # or
-npm run start:dev -- --clean 
+npm run start:once -- --clean 
+```
+
+## Querying
+
+```sh
+# list available queries
+npm run start:once -- --listQueries     
+
+npm run start:once -- --query countPokemon  
+npm run start:once -- --query heaviestWeight            
+npm run start:once -- --query heaviestPokemon
+npm run start:once -- --query tallestPokemon
+
+npm run start:once -- --query findPokemon --name Snorlax
+npm run start:once -- --query findPokemon --name Pidgeot
+npm run start:once -- --query findPokemonMatch --name S
+
+npm run start:once -- --query findPokemonInclude --name Pidgeot
+
+npm run start:once -- --query listWeaknesses  
+
+# THIS IS NOT WORKING CORRECTLY
+npm run start:once -- --query findPokemonWithWeakness --weakness Psychic
 ```
 
 ## Making changes
@@ -62,7 +82,6 @@ npm install @ngneat/falso
 npm install @prisma/client
 
 npx prisma
-
 npx prisma init --datasource-provider sqlite
 ```
 
@@ -75,10 +94,8 @@ npx prisma init --datasource-provider sqlite
 * falso getting started [here](https://ngneat.github.io/falso/docs/getting-started/)
 * falso examples [here](https://ngneat.github.io/falso/docs/general/#randboolean)
 * Learn Prisma In 60 Minutes [here](https://www.youtube.com/watch?v=RebA5J-rlwg)
-
-https://www.danilucaci.com/blog/reset-and-seed-prisma-database
-https://flaviocopes.com/prisma-clear-database/
-
-https://www.prisma.io/docs/concepts/components/prisma-schema/generators
-
-https://www.prisma.io/docs/concepts/components/prisma-schema/data-model
+* Prisma, how to clear the database [here](https://flaviocopes.com/prisma-clear-database/)
+* Concepts / Components / Prisma schema / Generators [here](https://www.prisma.io/docs/concepts/components/prisma-schema/generators)
+* Concepts / Components / Prisma schema / Data model [here](https://www.prisma.io/docs/concepts/components/prisma-schema/data-model)
+* Concepts / Components / Prisma Client / Relation queries [here](https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries)
+* How can I get the full object in Node.js's console.log(), rather than '[Object]'? [here](https://stackoverflow.com/questions/10729276/how-can-i-get-the-full-object-in-node-jss-console-log-rather-than-object)
