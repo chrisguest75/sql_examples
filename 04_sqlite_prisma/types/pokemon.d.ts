@@ -10,9 +10,7 @@ export interface Pokemon {
   num: string
   name: string
   img: string
-  type: {
-    [k: string]: string
-  }[]
+  type: string[]
   height: string
   weight: string
   candy: string
@@ -24,9 +22,7 @@ export interface Pokemon {
   multipliers: {
     [k: string]: string
   }[]
-  weaknesses: {
-    [k: string]: string
-  }[]
+  weaknesses: string[]
   next_evolution: [
     {
       num: string

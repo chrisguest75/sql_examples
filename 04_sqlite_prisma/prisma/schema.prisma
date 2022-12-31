@@ -19,11 +19,13 @@ model Pokemon {
 
   name String @unique
 
+  imageUrl String
+
   heightCm Int
 
   weightGrams Int
 
-  candy String 
+  candy String
 
   candy_count Int @default(0)
 
@@ -34,65 +36,24 @@ model Pokemon {
   avg_spawns Float
 
   spawn_time String
+
+  type PokemonType[]
+
+  weakness PokemonWeakness[]
 }
 
-// After the database connection
+model PokemonType {
+  id   Int    @id @default(autoincrement())
+  name String
 
-model User {
-  // We set an `id` variable
-  // With an `Int` type (number)
-  // Then, we set the Prisma decorators:
-  // - @id (because it's an ID)
-  // - @default(autoincrement()) (default value is auto-incremented)
-  id Int @id @default(autoincrement())
-
-  // We set an `email` variable
-  // With a `String` type
-  // Then, we set the Prisma decorator:
-  // - @unique (because we want the user to be unique
-  // based on the email - two users can't have the same)
-  email String @unique
-
-  // We set a `username` variable
-  // With a `String` type
-  username String
-
-  // We set a `tweets` variable
-  // With a `Tweet[]` type (one-to-many relationship)
-  // Because each user can have between
-  // 0 and an infinite number of tweets
-  tweets Tweet[]
+  Pokemon   Pokemon? @relation(fields: [pokemonId], references: [id])
+  pokemonId Int?
 }
 
+model PokemonWeakness {
+  id   Int    @id @default(autoincrement())
+  name String
 
-model Tweet {
-  // We set an `id` variable
-  // With an `Int` type (number)
-  // Then, we set the Prisma decorators:
-  // - @id (because it's an ID)
-  // - @default(autoincrement()) (default value is auto-incremented)
-  id Int @id @default(autoincrement())
-
-  // Save the tweet creation time
-  createdAt DateTime @default(now())
-
-  // We set a `text` variable
-  // With a `String` type
-  text String
-
-  // We set a `userId` variable
-  // With an `Int` type (number)
-  // It will link the `id` of the `User` model
-  userId Int
-
-  liked Boolean @default(false)
-
-  // We set a `user` variable
-  // With a `User` type (many-to-one relationship)
-  // Because each tweet has an author
-  // This author is a `User`
-  // We link the `User` to a `Tweet` based on:
-  // - the `userId` in the `Tweet` model
-  // - the `id` in the `User` model
-  user User @relation(fields: [userId], references: [id])
+  Pokemon   Pokemon? @relation(fields: [pokemonId], references: [id])
+  pokemonId Int?
 }

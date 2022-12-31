@@ -4,14 +4,14 @@ Demonstrate using prisma with sqlite.
 
 ## Reason
 
-Prisma is a 
+Prisma is an ORM for typescript that handles multiple SQL backends.  
 
 TODO:
 
 * Add some queries.  
-  * Add turn verbose on or not.  
-  * Number of tweets per user
-  * Total tweets
+  * Add turn verbose on or not for logging.  
+  * Spawn time as seconds.
+  * Get the relationships to work.  
   * React page to render queries
   * Block level attributes
 
@@ -49,7 +49,10 @@ npm run start:dev -- --clean
 
 ```sh
 # add a new field and create a new migration
-npx prisma migrate dev --name add_liked  
+npx prisma migrate dev --name add_liked 
+
+# adding a type relationship and get prisma to add the correct syntax to the schema
+npx prisma format        
 ```
 
 ## Created
@@ -78,3 +81,4 @@ https://flaviocopes.com/prisma-clear-database/
 
 https://www.prisma.io/docs/concepts/components/prisma-schema/generators
 
+https://www.prisma.io/docs/concepts/components/prisma-schema/data-model

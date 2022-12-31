@@ -9,6 +9,26 @@ import { Conversion } from '../src/conversion'
 
 const prisma = new PrismaClient({ log: ['query'] })
 
+const PokemonTypes = [
+  'Bug',
+  'Dark',
+  'Dragon',
+  'Electric',
+  'Fairy',
+  'Fighting',
+  'Fire',
+  'Flying',
+  'Ghost',
+  'Grass',
+  'Ground',
+  'Ice',
+  'Poison',
+  'Psychic',
+  'Rock',
+  'Steel',
+  'Water',
+]
+
 /*
 Clean the database
  */
@@ -16,13 +36,13 @@ async function clean(args: minimist.ParsedArgs) {
   logger.info(`Cleaning pokemon`)
   await prisma.pokemon.deleteMany({})
 
+  logger.info(`Cleaning pokemonTypes`)
+  await prisma.pokemonType.deleteMany({})
+
+  logger.info(`Cleaning pokemonWeakenesses`)
+  await prisma.pokemonWeakness.deleteMany({})
+
   // NOTE: it will fail deleting the user if there are tweets
-  logger.info(`Cleaning tweets`)
-  await prisma.tweet.deleteMany({})
-
-  logger.info(`Cleaning users`)
-  await prisma.user.deleteMany({})
-
   return new Promise((resolve, reject) => {
     resolve('Complete')
   })
@@ -41,7 +61,7 @@ async function seed(args: minimist.ParsedArgs) {
     try {
       const pokedex = JSON.parse(fs.readFileSync(file, 'utf8'))
 
-      // create pokemon 
+      // create pokemon
       await Promise.all(
         pokedex.pokemon.map(async (pokemon: Pokemon) => {
           const heightCm = Conversion.metresToCm(pokemon.height)
@@ -57,6 +77,7 @@ async function seed(args: minimist.ParsedArgs) {
               version: pokemon.version,
               num: pokemon.num,
               name: pokemon.name,
+              imageUrl: pokemon.img,
               heightCm: heightCm,
               weightGrams: weightGrams,
               candy: pokemon.candy,
@@ -67,7 +88,26 @@ async function seed(args: minimist.ParsedArgs) {
               spawn_time: pokemon.spawn_time,
             },
           })
-          logger.info(`Pokemon`, JSON.stringify(record))
+
+          pokemon.type.map(async (type: string) => {
+            const typerecord = await prisma.pokemonType.create({
+              data: {
+                name: type,
+                pokemonId: pokemon.id,
+              },
+            })
+            logger.info(`PokemonType`, JSON.stringify(typerecord))
+          }),
+            pokemon.weaknesses.map(async (weakness: string) => {
+              const weaknessrecord = await prisma.pokemonWeakness.create({
+                data: {
+                  name: weakness,
+                  pokemonId: pokemon.id,
+                },
+              })
+              logger.info(`PokemonWeakeness`, JSON.stringify(weaknessrecord))
+            }),
+            logger.info(`Pokemon`, JSON.stringify(record))
         }),
       )
     } catch (e) {
@@ -75,40 +115,6 @@ async function seed(args: minimist.ParsedArgs) {
       return new Promise((resolve, reject) => {
         reject(e)
       })
-    }
-  } else {
-    // create random users
-    const count = Number.parseInt(args['count'])
-    if (count <= 0) {
-      logger.warn('File count is not set')
-    } else {
-      logger.info(`Writing ${count} records`)
-    }
-
-    // create count number of users
-    for (let i = 0; i < count; i++) {
-      // We create a new user
-      const newUser = await prisma.user.create({
-        data: {
-          email: randEmail(),
-          username: randUser().username,
-        },
-      })
-
-      logger.info(`NewUser:${newUser}`)
-
-      // assign random number of tweets to user
-      const tweets = randNumber({ min: 1, max: 6 })
-      for (let tweet = 0; tweet < tweets; tweet++) {
-        const firstTweet = await prisma.tweet.create({
-          data: {
-            text: randTextRange({ min: 10, max: 100 }),
-            userId: newUser.id,
-          },
-        })
-
-        logger.info(`Tweet ${tweet}:${firstTweet}`)
-      }
     }
   }
 
@@ -120,17 +126,7 @@ async function seed(args: minimist.ParsedArgs) {
 async function query(args: minimist.ParsedArgs) {
   logger.info(`Querying DB`)
 
-  // We fetch the new user again (by its unique email address)
-  // and we ask to fetch its tweets at the same time
-  const newUserWithTweets = await prisma.user.findUnique({
-    where: {
-      email: 'hello@herewecode.io',
-    },
-    include: { tweets: true },
-  })
-
   return new Promise((resolve, reject) => {
-    logger.info(`Tweets:${newUserWithTweets}`)
     resolve('Complete')
   })
 }
