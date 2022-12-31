@@ -256,7 +256,7 @@ async function query(args: minimist.ParsedArgs) {
   // access the query by name
   type ObjectKey = keyof typeof queries
   const result = await queries[queryName as ObjectKey](args)
-  //console.log(util.inspect(result, { showHidden: false, depth: null, colors: true }))
+  console.log(util.inspect(result, { showHidden: false, depth: null, colors: true }))
 
   return new Promise((resolve, reject) => {
     resolve('Complete')

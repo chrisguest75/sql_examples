@@ -6,9 +6,13 @@ Demonstrate using prisma with sqlite.
 
 Prisma is an ORM for typescript that handles multiple SQL backends.  
 
+NOTES:
+
+* Using distroless image fails because the libraries are compiled in the first stage image.  
+* The db is created during the image build.  
+
 TODO:
 
-* Make docker work
 * Add turn verbose on or not for logging.  
 * Spawn time as seconds.
 * React page to render queries
@@ -65,7 +69,17 @@ npm run start:once -- --query listWeaknesses
 npm run start:once -- --query findPokemonWithWeakness --weakness Psychic
 ```
 
-## Making changes
+## Docker
+
+```sh
+npm run docker:run -- ./src/index.js --listQueries  
+
+npm run docker:run -- ./src/index.js --query findPokemon --name Snorlax
+
+npm run docker:run -- ./src/index.js --query listWeaknesses
+```
+
+## Schema changes
 
 ```sh
 # add a new field and create a new migration
@@ -78,11 +92,19 @@ npx prisma format
 ## Created
 
 ```sh
-npm install @ngneat/falso 
 npm install @prisma/client
 
 npx prisma
+# 
 npx prisma init --datasource-provider sqlite
+```
+
+## Troubleshooting
+
+```sh
+# troubleshooting builder
+npm run docker:build:builder            
+docker run -it 04_sqlite_prisma /bin/bash  
 ```
 
 ## Resources
@@ -98,4 +120,4 @@ npx prisma init --datasource-provider sqlite
 * Concepts / Components / Prisma schema / Generators [here](https://www.prisma.io/docs/concepts/components/prisma-schema/generators)
 * Concepts / Components / Prisma schema / Data model [here](https://www.prisma.io/docs/concepts/components/prisma-schema/data-model)
 * Concepts / Components / Prisma Client / Relation queries [here](https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries)
-* How can I get the full object in Node.js's console.log(), rather than '[Object]'? [here](https://stackoverflow.com/questions/10729276/how-can-i-get-the-full-object-in-node-jss-console-log-rather-than-object)
+* How can I get the full object in Node.js's console.log(), rather than '[Object]'? [here](https://stackoverflow.com/questions/10729276/how-can-i-get-the-full-object-in-node-jss-console-log-rather-than-object)  
