@@ -24,6 +24,11 @@ Steps [README.md](./01_sqlite_basic/README.md)
 Demonstrate building an SBOM db in sqlite  
 Steps [README.md](./02_sqlite_sbom/README.md)  
 
+## 04 - sqlite prisma
+
+Demonstrate using prisma with sqlite.  
+Steps [README.md](./04_sqlite_prisma/README.md)  
+
 ## Resources
 
 * What Is SQLite? [here](https://sqlite.org/index.html)

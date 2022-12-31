@@ -13,6 +13,7 @@ NOTES:
 
 TODO:
 
+* Get images and insert as binary data.
 * Add turn verbose on or not for logging.  
 * Spawn time as seconds.
 * React page to render queries
