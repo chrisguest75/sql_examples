@@ -2,12 +2,19 @@
 
 A reposistory to demonstrate some SQL examples
 
+NOTES:  
+
+* SQLite does not support DECLARE for variables.  
+* REPLACE INTO can be used for upsert.  
+* Used a left-join against a dynamic table to get a NULL row.  
+
 TODO:
 
 * mysql
 * postgres
 * sqlite
 * sqlserver
+* osquery to sqlite
 
 ## 00 - Cheatsheet
 
