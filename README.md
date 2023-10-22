@@ -9,9 +9,9 @@ TODO:
 * sqlite
 * sqlserver
 
-## 00 - Cheatsheet
+## 00 - cheatsheet
 
-Cheatsheet for Sqlite
+Cheatsheet for Sqlite  
 Steps [README.md](./00_cheatsheet/README.md)  
 
 ## 01 - sqlite basic
@@ -28,6 +28,11 @@ Steps [README.md](./02_sqlite_sbom/README.md)
 
 Demonstrate using prisma with sqlite.  
 Steps [README.md](./04_sqlite_prisma/README.md)  
+
+## 12 - aws athena
+
+Amazon Athena is an interactive query service offered by Amazon Web Services (AWS).  
+Steps [README.md](./12_athena/README.md)  
 
 ## Resources
 
