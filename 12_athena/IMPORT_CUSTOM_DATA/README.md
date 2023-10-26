@@ -2,7 +2,12 @@
 
 Importing data from custom sources.  
 
-NOTE:
+NOTES:
+
+* It took a while to work out that `_id` needed escaping.  
+* Always copy your data into a subkey as it will not accept single files in location.  
+
+DEMONSTRATES:
 
 * Export from mongo
 * Copy to S3
@@ -28,8 +33,6 @@ aws --no-cli-pager s3 cp ./simple.csv s3://myimportbucket/import/simple/simple.c
 ## Add to Athena
 
 Types; DATE, BIGINT, INT, FLOAT.
-
-NOTE: It took a while to work out that `_id` needed escaping.  
 
 ```sql
 CREATE EXTERNAL TABLE my_simple_data (
