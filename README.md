@@ -38,3 +38,8 @@ Steps [README.md](./12_athena/README.md)
 
 * What Is SQLite? [here](https://sqlite.org/index.html)
 * SQLite Tutorial [here](https://www.sqlitetutorial.net/)
+* SQL:2003 [here](https://en.wikipedia.org/wiki/SQL:2003)
+* SQL:2008 [here](https://en.wikipedia.org/wiki/SQL:2008)
+* SQL:2011 [here](https://en.wikipedia.org/wiki/SQL:2011)
+* SQL:2016 [here](https://en.wikipedia.org/wiki/SQL:2016)
+* SQL:2023 [here](https://en.wikipedia.org/wiki/SQL:2023)
