@@ -29,6 +29,14 @@ Amazon Athena is a valuable tool for data analysts, data engineers, and anyone w
 TODO:
 
 * discover the s3 output bucket location from the cli
+* what format is the metadata file left with the results files on s3?
+* glue??
+
+### Creating Databases
+
+```sql
+CREATE DATABASE my_database;
+```
 
 ### Creating tables from outputs
 
