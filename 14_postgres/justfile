@@ -1,0 +1,19 @@
+set dotenv-load := true
+
+# default lists actions
+default:
+  @just -f {{ source_file() }} --list
+
+start envfile="./compose.env": (stop envfile)
+  docker compose --env-file {{ envfile }} -f docker-compose.yaml up -d --force-recreate
+
+stop envfile="./compose.env":
+  docker compose --env-file {{ envfile }} -f docker-compose.yaml down --remove-orphans       
+
+logs envfile="./compose.env":
+  docker compose --env-file {{ envfile }} -f docker-compose.yaml logs      
+
+
+shell service="postgres" envfile="./compose.env":
+  docker compose --env-file {{ envfile }} -f docker-compose.yaml exec -it {{ service }} /bin/bash
+
