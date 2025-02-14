@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "mechatroner.rainbow-csv",
+        "ms-azuretools.vscode-docker",
+        "vivaxy.vscode-conventional-commits",
+        "davidanson.vscode-markdownlint",
+        "nefrob.vscode-just-syntax"
+    ]
+}
