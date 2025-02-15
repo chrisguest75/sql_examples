@@ -5,6 +5,7 @@ services:
     image: postgres:latest
     volumes:
       - ./schema:/scratch/schema
+      - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PW}
@@ -35,4 +36,6 @@ services:
 networks:
     service_bridge:
         driver: bridge
-      
+
+volumes:
+  postgres_data:

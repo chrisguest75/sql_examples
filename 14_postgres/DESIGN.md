@@ -4,11 +4,11 @@ Simple DB for tracking tasks and allocations.
 
 TODO:
 
-* Find under-capacity pools and find numbers to launch
-* Find tasks running over a period of time
+* Launch tasks to fill desired capacity
+* Allocate tasks randomly
 * Open transactions for assigning work.
   * Add lauching tasks without locking.
-  * Assigning tasks with locking 
+  * Assigning tasks with locking
 
 ## ACTIONS
 
