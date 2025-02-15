@@ -63,8 +63,8 @@ psql -U dbuser -d pools -f /scratch/schema/actions/show_pools.sql
 psql -U dbuser -d pools -f /scratch/schema/actions/show_status.sql
 
 # simulate launching tasks
-export STATUS_ID=2
-export POOL_ID=3
+export STATUS_ID=1
+export POOL_ID=2
 export CONTAINER_ID=$(head /dev/urandom | tr -dc a-f0-9 | head -c 40)
 psql -U dbuser -d pools -c "$(envsubst </scratch/schema/actions/launch_task.template.sql)"
 

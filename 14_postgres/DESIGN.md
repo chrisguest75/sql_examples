@@ -4,6 +4,9 @@ Simple DB for tracking tasks and allocations.
 
 TODO:
 
+* fix capacity by pool
+* Add an add and delete pool.
+* Have pools active and deactivated
 * Launch tasks to fill desired capacity
 * Allocate tasks randomly
 * Open transactions for assigning work.

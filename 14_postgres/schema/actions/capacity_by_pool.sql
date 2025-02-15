@@ -7,4 +7,4 @@ INNER JOIN public.pool AS pool ON pool.id = tasks.pool_id
 INNER JOIN public.status AS status ON status.id = tasks.status_id
 WHERE status.name = 'Launching' OR status.name = 'Ready'
 GROUP BY pool.id) AS capacity_by_pool 
-INNER JOIN public.pool AS pool ON pool.id = capacity_by_pool.id
+RIGHT OUTER JOIN public.pool AS pool ON pool.id = capacity_by_pool.id
