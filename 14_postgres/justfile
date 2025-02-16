@@ -4,6 +4,16 @@ set dotenv-load := true
 default:
   @just -f {{ source_file() }} --list
 
+nix:
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  nix develop --command zsh
+
+pgcli:
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  pgcli --host 0.0.0.0 --port 5432 -U dbuser -d pools
+
 start envfile="./compose.env": (stop envfile)
   docker compose --env-file {{ envfile }} -f docker-compose.yaml up -d --force-recreate
 

@@ -1,5 +1,5 @@
 -- find current capacity by pool and also return desired capacity
-SELECT pool.name, capacity, desired_capacity, capacity - desired_capacity AS delta
+SELECT pool.name, COALESCE(capacity, 0), desired_capacity, COALESCE(capacity, 0) - desired_capacity AS delta
 FROM 
 (SELECT pool.id, COUNT(pool.name) AS capacity
 FROM public.tasks AS tasks 
