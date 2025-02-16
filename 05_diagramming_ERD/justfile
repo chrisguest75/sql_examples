@@ -1,0 +1,21 @@
+set dotenv-load := true
+
+# default lists actions
+default:
+  @just -f {{ source_file() }} --list
+
+nix:
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  nix develop --command zsh
+
+pgcli:
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  pgcli --host 0.0.0.0 --port 5432 -U dbuser -d pools
+
+mermerd:
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  mkdir -p ./out || true
+  mermerd --connectionString postgresql://dbuser:dbuser@0.0.0.0:5432/pools --outputFileName ./out/result_erd.mmd
