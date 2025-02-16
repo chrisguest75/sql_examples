@@ -13,8 +13,11 @@ SELECT version();
 -- display tables
 \dt
 
--- select from system views
+-- select from system catalogs
 SELECT * FROM pg_database;
+
+-- select from system views
+SELECT * FROM pg_tables;
 ```
 
 ## Resources

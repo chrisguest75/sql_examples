@@ -7,7 +7,6 @@ TODO:
 * Get pgadmin to already have a server connection https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html#importing-servers
 * Mermaid diagrams for DB
 * Generate events
-* Test locking and isolation behaviour
 
 ## Start
 
@@ -34,6 +33,8 @@ just nix
 # connect from local
 just pgcli
 ```
+
+### Schema
 
 ```sh
 just shell
@@ -95,8 +96,6 @@ psql -U dbuser -d pools -f /scratch/schema/actions/capacity_by_pool.sql
 
 # expire tasks
 psql -U dbuser -d pools -c "$(envsubst </scratch/schema/actions/workload_expired.template.sql)"
-
-
 ```
 
 ## Stop
@@ -107,7 +106,7 @@ just stop
 
 ## Resources
 
-* https://www.postgresql.org/docs/
+* Postgres Docs [here](https://www.postgresql.org/docs/)
 * How to Use the Postgres Docker Official Image [here](https://www.docker.com/blog/how-to-use-the-postgres-docker-official-image/)
 * pgAdmin is the most popular and feature rich Open Source administration and development platform for PostgreSQL, the most advanced Open Source database in the world. [here](https://www.pgadmin.org/)
 * awesome-compose/postgresql-pgadmin repo [here](https://github.com/docker/awesome-compose/tree/master/postgresql-pgadmin)
