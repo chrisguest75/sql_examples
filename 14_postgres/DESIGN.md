@@ -41,4 +41,34 @@ Task Status:
 
    What is the desired capacity?
 
+## SCHEMA
+
+```mermaid
+erDiagram
+    pool {
+        integer desired_capacity 
+        integer id PK 
+        text name 
+    }
+
+    status {
+        integer id PK 
+        text name 
+    }
+
+    tasks {
+        timestamp_with_time_zone assigned_at 
+        text container_id UK 
+        timestamp_with_time_zone created_at 
+        integer id PK 
+        integer pool_id FK 
+        integer status_id FK 
+        timestamp_with_time_zone stopped_at 
+        text unit_of_work_id UK 
+    }
+
+    tasks }o--|| pool : "pool_id"
+    tasks }o--|| status : "status_id"
+```
+
 ## Resources
