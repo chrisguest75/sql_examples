@@ -1,16 +1,16 @@
 # DESIGN
 
-Simple DB for tracking tasks and allocations.  
+Simple DB for tracking pools of compute, tasks and allocations.  
 
 TODO:
 
 * A table to track processes that are sets of multiple tasks from different pools.
 * Launch tasks to fill desired capacity
 * Allocate tasks randomly
+* Have pools active and deactivated
 * Open transactions for assigning work.
   * Add lauching tasks without locking.
   * Assigning tasks with locking
-* Have pools active and deactivated
 
 ## ACTIONS
 
@@ -35,13 +35,11 @@ Task Status:
 
 4. PoolCapacity(PoolId)
 
-   How many available tasks in a pool?
-
-5. DesiredCapacity(PoolId)
-
-   What is the desired capacity?
+   How many available tasks in a pool? Include the desired capacity.  
 
 ## SCHEMA
+
+Generated using `mermerd` ref:[05_diagramming_ERD/README.md](../05_diagramming_ERD/README.md)  
 
 ```mermaid
 erDiagram
@@ -72,3 +70,4 @@ erDiagram
 ```
 
 ## Resources
+

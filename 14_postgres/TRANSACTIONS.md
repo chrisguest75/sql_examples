@@ -6,7 +6,7 @@ Test locking and isolation behaviour
 
 ### Session 1 (Step 1)
 
-OPen a held transaction.  
+Open a held transaction.  
 
 ```sql
 BEGIN;

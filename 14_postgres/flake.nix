@@ -15,6 +15,7 @@
 
       packages = [ 
           pkgs.pgcli
+          pkgs.postgresql_17
        ];
 
       env = {

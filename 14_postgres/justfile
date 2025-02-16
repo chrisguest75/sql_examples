@@ -1,5 +1,11 @@
 set dotenv-load := true
 
+export POSTGRES_HOST:="0.0.0.0"
+export POSTGRES_PORT:="5432"
+export POSTGRES_USER:="dbuser"
+export POSTGRES_PW:="dbuser"
+export POSTGRES_DB:="pools"
+
 # default lists actions
 default:
   @just -f {{ source_file() }} --list
@@ -14,16 +20,93 @@ pgcli:
   set -eufo pipefail
   pgcli --host 0.0.0.0 --port 5432 -U dbuser -d pools
 
+################################################################################
+
 start envfile="./compose.env": (stop envfile)
   docker compose --env-file {{ envfile }} -f docker-compose.yaml up -d --force-recreate
 
 stop envfile="./compose.env":
   docker compose --env-file {{ envfile }} -f docker-compose.yaml down --remove-orphans       
 
+stop-clean envfile="./compose.env":
+  docker compose --env-file {{ envfile }} -f docker-compose.yaml down --remove-orphans --volumes      
+
 logs envfile="./compose.env":
   docker compose --env-file {{ envfile }} -f docker-compose.yaml logs      
-
 
 shell service="postgres" envfile="./compose.env":
   docker compose --env-file {{ envfile }} -f docker-compose.yaml exec -it {{ service }} /bin/bash
 
+################################################################################
+
+db-create-schema:
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  
+  export PGPASSWORD=${POSTGRES_PW} 
+  # pool
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f ./schema/tbl_pool.sql
+  # status
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f ./schema/tbl_status.sql
+  # tasks
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f ./schema/tbl_tasks.sql
+  # load data
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f ./schema/load_tbl_pool.sql
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f ./schema/load_tbl_status.sql
+
+db-show table="tasks":
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  export PGPASSWORD=${POSTGRES_PW} 
+  # pool
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f ./schema/actions/show_{{ table }}.sql
+
+db-launch pool="1":
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  export PGPASSWORD=${POSTGRES_PW} 
+  # simulate launching tasks
+  export STATUS_ID=1
+  export POOL_ID={{ pool }}
+  export CONTAINER_ID=$(head /dev/urandom | tr -dc a-f0-9 | head -c 40)
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c "$(envsubst <./schema/actions/launch_task.template.sql)"
+  # show
+  just db-show tasks
+  just db-capacity
+
+db-ready pool="1":
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  export PGPASSWORD=${POSTGRES_PW} 
+  export POOL_ID={{ pool }}
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c "$(envsubst <./schema/actions/task_ready.template.sql)"
+  # show
+  just db-show tasks
+  just db-capacity
+
+db-assign pool="1":
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  export PGPASSWORD=${POSTGRES_PW} 
+  export POOL_ID={{ pool }}
+  export WORK_ID="work_$(head /dev/urandom | tr -dc a-f0-9 | head -c 20)"
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c "$(envsubst <./schema/actions/assign_workload.template.sql)"
+  # show
+  just db-show tasks
+  just db-capacity
+
+db-complete pool="1":
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  export PGPASSWORD=${POSTGRES_PW} 
+  export POOL_ID={{ pool }}
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c "$(envsubst <./schema/actions/workload_expired.template.sql)"
+  # show
+  just db-show tasks
+  just db-capacity
+  
+db-capacity:
+  #!/usr/bin/env bash
+  set -eufo pipefail
+  export PGPASSWORD=${POSTGRES_PW} 
+  psql --host ${POSTGRES_HOST} --port ${POSTGRES_PORT} -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c "$(envsubst <./schema/actions/capacity_by_pool.sql)"

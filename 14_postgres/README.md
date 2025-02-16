@@ -5,7 +5,6 @@ Create an example postgres based DB.
 TODO:
 
 * Get pgadmin to already have a server connection https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html#importing-servers
-* Mermaid diagrams for DB
 * Generate events
 
 ## Start
@@ -13,8 +12,8 @@ TODO:
 ```sh
 just start
 
-just shell postgres
-just shell pgadmin
+# load db
+just db-create-schema
 ```
 
 ## pgAdmin
@@ -34,68 +33,44 @@ just nix
 just pgcli
 ```
 
-### Schema
+### Connect
 
 ```sh
-just shell
+just shell postgres "./compose.env" 
+just shell pgadmin
+
+# install envsubst
+apt update && apt install gettext-base
 
 # connect
 psql -U dbuser -d pools
 
 # list dbs
 \l 
-
-# pool
-psql -U dbuser -d pools -f /scratch/schema/tbl_pool.sql
-
-# status
-psql -U dbuser -d pools -f /scratch/schema/tbl_status.sql
-
-# tasks
-psql -U dbuser -d pools -f /scratch/schema/tbl_tasks.sql
-
-# load data
-psql -U dbuser -d pools -f /scratch/schema/load_tbl_pool.sql
-psql -U dbuser -d pools -f /scratch/schema/load_tbl_status.sql
 ```
 
 ## Perform Operations
 
 ```sh
-just shell postgres "./compose.env" 
-
-# install envsubst
-apt update && apt install gettext-base
-
-psql -U dbuser -d pools -f /scratch/schema/actions/show_pools.sql
-psql -U dbuser -d pools -f /scratch/schema/actions/show_status.sql
+# show tables
+just db-show pools
+just db-show status
+just db-show tasks
 
 # simulate launching tasks
-export STATUS_ID=1
-export POOL_ID=2
-export CONTAINER_ID=$(head /dev/urandom | tr -dc a-f0-9 | head -c 40)
-psql -U dbuser -d pools -c "$(envsubst </scratch/schema/actions/launch_task.template.sql)"
-
-psql -U dbuser -d pools -f /scratch/schema/actions/show_tasks.sql
+just db-launch 1
 
 # launched to ready
-psql -U dbuser -d pools -c "$(envsubst </scratch/schema/actions/task_ready.template.sql)"
-
-
+just db-ready 1
 
 # assign a work load
-export POOL_ID=1
-export WORK_ID="work_$(head /dev/urandom | tr -dc a-f0-9 | head -c 20)"
-psql -U dbuser -d pools -c "$(envsubst </scratch/schema/actions/assign_workload.template.sql)"
-
-psql -U dbuser -d pools -f /scratch/schema/actions/show_tasks.sql
+just db-assign 1
 
 # capacity by pool
-psql -U dbuser -d pools -f /scratch/schema/actions/capacity_by_pool.sql
-
+just db-capacity
 
 # expire tasks
-psql -U dbuser -d pools -c "$(envsubst </scratch/schema/actions/workload_expired.template.sql)"
+just db-complete 1
 ```
 
 ## Stop
