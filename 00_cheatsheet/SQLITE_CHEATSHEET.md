@@ -2,6 +2,20 @@
 
 Cheatsheet for Sqlite
 
+NOTES:  
+
+* SQLite does not support DECLARE for variables.  
+* REPLACE INTO can be used for upsert.  
+* Used a left-join against a dynamic table to get a NULL row.  
+* Although sqlite supports JSON type it doesn't seem to offer functions to work with it easily.  
+
+## Schema
+
+```sh
+# show tables for a sqlite db
+sqlite3 "${DBFILE}" 'SELECT name FROM sqlite_schema WHERE type ="table" AND name NOT LIKE "sqlite_%";'
+```
+
 ## CSV Example
 
 ```sh

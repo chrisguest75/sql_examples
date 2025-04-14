@@ -2,3 +2,4 @@
 
 * mysql
 * sqlserver
+* osquery to sqlite
